@@ -31,6 +31,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <stdlib.h>
 #include "SDL_tty.h"
 
 int main()

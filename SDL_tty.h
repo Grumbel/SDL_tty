@@ -47,7 +47,7 @@ typedef struct TTY_Font
 {
   /** 
    *  Surface containing the glyphs, glyphs have to be fixed width and
-   *  run from left to right, seperating the glyphs to multiple lines
+   *  run from left to right, separating the glyphs to multiple lines
    *  is allowed
    */
   SDL_Surface* surface;
@@ -87,13 +87,13 @@ typedef struct TTY
 
   /** 
    *  The cursors x position in the framebuffer in screen coordinates,
-   *  use TTY_SetCursor() to avoid throuble when scrolling
+   *  use TTY_SetCursor() to avoid trouble when scrolling
    */
   int cursor_x;
 
   /** 
    *  The cursors y position in the framebuffer in screen coordinates,
-   *  use TTY_SetCursor() to avoid throuble when scrolling
+   *  use TTY_SetCursor() to avoid trouble when scrolling
    */
   int cursor_y;
 
@@ -132,20 +132,55 @@ typedef struct TTY
  *  @param glyph_height The height of a glyph
  *  @param letters      The letters that are present in the font
  */
-TTY_Font* TTY_CreateFont(SDL_Surface* surface, int glyph_width, int glyph_height, char* letters);
+TTY_Font* TTY_CreateFont(SDL_Surface* surface, int glyph_width, int glyph_height, const char* letters);
 void      TTY_FreeFont(TTY_Font* font);
 
 /**
  *  Calculate the position of character \a idx in the surface used by
  *  \a font and write the result to \a rect
  */
-void TTY_GetGlypth(TTY_Font* font, char idx, SDL_Rect* rect);
+void TTY_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect);
+
+enum {
+  FNT_ALIGN_LEFT     = (1<<0),
+  FNT_ALIGN_RIGHT    = (1<<1),
+  FNT_ALIGN_H_CENTER = FNT_ALIGN_LEFT | FNT_ALIGN_RIGHT,
+
+  FNT_ALIGN_TOP      = (1<<2),
+  FNT_ALIGN_BOTTOM   = (1<<3),
+  FNT_ALIGN_V_CENTER = FNT_ALIGN_TOP | FNT_ALIGN_BOTTOM,
+
+  FNT_ALIGN_CENTER = FNT_ALIGN_H_CENTER | FNT_ALIGN_V_CENTER
+};
+
+/** 
+ * Return the height, ie. lines * font_height, of a given text in
+ * pixel
+ */
+int FNT_GetTextHeight(TTY_Font* font, const char* text);
+
+/** 
+ * Return the width, ie. the width of the longest line, of a given
+ * text in pixel
+ */
+int FNT_GetTextWidth(TTY_Font* font, const char* text);
+
+/** 
+ * Return the width of the given line (everything after a \0 or a \n is ignored)
+ */
+int FNT_GetTextLineWidth(TTY_Font* font, const char* text);
 
 /** 
  *  Print the given string to the screen at the given coordinates using \a font.
  */
 void TTY_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *str);
-/* void TTY_Printf(TTY_Font* font, const char *fmt, ...)  __attribute__ ((format (printf, 2, 3))); */
+
+/** 
+ *  Print to the screen at the given coordinates, while handling \a
+ *  fmt in a printf like manner
+ */
+void TTY_Printf(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *fmt, ...)
+  __attribute__ ((format (printf, 6, 7)));
 
 /** 
  *  Allocate a new TTY with the given dimensions and font.
