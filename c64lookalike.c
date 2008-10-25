@@ -65,9 +65,9 @@ int main()
   {
     // SDL_Surface* temp = TTY_CreateRGBSurface(font8x12);
     SDL_Surface* temp = IMG_Load("c64_16x16.png");
-    font = TTY_CreateFont(temp, 16, 16, 
-                          "\x7f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                        "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
+    font = FNT_Create(temp, 16, 16, 
+                      "\x7f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                      "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
     tty = TTY_Create(40, 30, font);
     SDL_FreeSurface(temp);
   }
@@ -199,7 +199,7 @@ int main()
     }
 
   TTY_Free(tty);
-  TTY_FreeFont(font);
+  FNT_Free(font);
   return 0;
 }
 

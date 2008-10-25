@@ -35,7 +35,7 @@ extern "C" {
 
 #define TTY_MAJOR_VERSION  0;
 #define TTY_MINOR_VERSION  0;
-#define TTY_PATH_VERSION   1;
+#define TTY_PATCH_VERSION  2;
 
 /** Reuse SDL functions for error reporting */
 #define TTY_SetError	SDL_SetError
@@ -119,11 +119,7 @@ typedef struct TTY
 
 }  TTY;
 
-#define TTY_CreateRGBSurface(name) SDL_CreateRGBSurfaceFrom( name##_data, \
-                                      name##_width, name##_height, name##_bpp, name##_pitch, \
-                                      name##_rmask, name##_gmask,  name##_bmask, name##_amask )
-
-#define TTY_CreateFontFromData(name) \
+#define FNT_CreateFromData(name) \
   TTY_CreateFont(SDL_CreateRGBSurfaceFrom( name##_data,                 \
                                            name##_width, name##_height, name##_bpp, name##_pitch, \
                                            name##_rmask, name##_gmask,  name##_bmask, name##_amask ), \
@@ -139,14 +135,14 @@ typedef struct TTY
  *  @param glyph_height The height of a glyph
  *  @param letters      The letters that are present in the font
  */
-TTY_Font* TTY_CreateFont(SDL_Surface* surface, int glyph_width, int glyph_height, const char* letters);
-void      TTY_FreeFont(TTY_Font* font);
+TTY_Font* FNT_Create(SDL_Surface* surface, int glyph_width, int glyph_height, const char* letters);
+void      FNT_Free(TTY_Font* font);
 
 /**
  *  Calculate the position of character \a idx in the surface used by
  *  \a font and write the result to \a rect
  */
-void TTY_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect);
+void FNT_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect);
 
 enum {
   FNT_ALIGN_LEFT     = (1<<0),
@@ -180,13 +176,13 @@ int FNT_GetTextLineWidth(TTY_Font* font, const char* text);
 /** 
  *  Print the given string to the screen at the given coordinates using \a font.
  */
-void TTY_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *str);
+void FNT_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *str);
 
 /** 
  *  Print to the screen at the given coordinates, while handling \a
  *  fmt in a printf like manner
  */
-void TTY_Printf(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *fmt, ...)
+void FNT_Printf(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *fmt, ...)
   __attribute__ ((format (printf, 6, 7)));
 
 /** 
@@ -206,12 +202,12 @@ TTY* TTY_Create(int width, int height, TTY_Font* font);
 void TTY_Free(TTY* tty);
 
 /**
- *  The the current cursor position to \a x, \a y, if x or y are
+ *  Set the current cursor position to \a x, \a y, if x or y are
  *  outside the range of the TTY, they automatically wrap around 
  */
 void TTY_SetCursor(TTY* tty, int x, int y);
 
-void TTY_SetScrollOffset(TTY* tty, int scroll_x, int scroll_y);
+void TTY_SetScrollOffset(TTY* tty, int  scroll_x, int  scroll_y);
 void TTY_GetScrollOffset(TTY* tty, int* scroll_x, int* scroll_y);
 
 /**

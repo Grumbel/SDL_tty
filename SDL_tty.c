@@ -75,7 +75,7 @@ make_message(const char *fmt, va_list ap)
 }
 
 TTY_Font*
-TTY_CreateFont(SDL_Surface* surface, int glyph_width, int glyph_height, const char* letters)
+FNT_Create(SDL_Surface* surface, int glyph_width, int glyph_height, const char* letters)
 {
   int i;
   TTY_Font* font = (TTY_Font*)malloc(sizeof(TTY_Font));
@@ -99,14 +99,14 @@ TTY_CreateFont(SDL_Surface* surface, int glyph_width, int glyph_height, const ch
 }
 
 void
-TTY_FreeFont(TTY_Font* font)
+FNT_Free(TTY_Font* font)
 {
   SDL_FreeSurface(font->surface);
   free(font);
 }
 
 void
-TTY_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect)
+FNT_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect)
 {
   idx = font->transtbl[(int)idx];
 
@@ -117,16 +117,18 @@ TTY_GetGlyph(TTY_Font* font, char idx, SDL_Rect* rect)
   rect->h = font->glyph_height;
 }
 
-void TTY_Printf(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *fmt, ...)
+void
+FNT_Printf(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
   char* str = make_message(fmt, ap);
-  TTY_Print(font, screen, x, y, flags, str);
+  FNT_Print(font, screen, x, y, flags, str);
   free(str);
 }
 
-int FNT_GetTextHeight(TTY_Font* font, const char* text)
+int
+FNT_GetTextHeight(TTY_Font* font, const char* text)
 {
   int lines = 1;
   int i;
@@ -173,8 +175,10 @@ int FNT_GetTextLineWidth(TTY_Font* font, const char* text)
 }
 
 void
-TTY_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *str)
+FNT_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const char *str)
 {
+  /* FIXME: If flags is 0 this code will not behave correctly, should default to FNT_ALIGN_LEFT if flags is 0  */
+
   SDL_Rect src_rect;
   SDL_Rect dst_rect;
 
@@ -231,7 +235,7 @@ TTY_Print(TTY_Font* font, SDL_Surface* screen, int x, int y, Uint32 flags, const
         }
       else
         {
-          TTY_GetGlyph(font, str[i], &src_rect);
+          FNT_GetGlyph(font, str[i], &src_rect);
   
           dst_rect.x = x + x_of;
           dst_rect.y = y + y_of;
@@ -407,7 +411,7 @@ void TTY_Blit(TTY* tty, SDL_Surface* screen, int screen_x, int screen_y)
                   modulo(y + tty->scroll_y, tty->height) == tty->cursor_y &&
                   (SDL_GetTicks()/200) % 2 == 0)
                 {
-                  TTY_GetGlyph(tty->font, tty->cursor_character, &src_rect);
+                  FNT_GetGlyph(tty->font, tty->cursor_character, &src_rect);
 
                   dst_rect.x = screen_x + x * tty->font->glyph_width;
                   dst_rect.y = screen_y + y * tty->font->glyph_height;
@@ -419,7 +423,7 @@ void TTY_Blit(TTY* tty, SDL_Surface* screen, int screen_x, int screen_y)
                   char chr = tty->framebuffer[modulo(y + tty->scroll_y, tty->height)][modulo(x + tty->scroll_x, tty->width)];
                   if (chr)
                     {
-                      TTY_GetGlyph(tty->font, chr, &src_rect);
+                      FNT_GetGlyph(tty->font, chr, &src_rect);
 
                       dst_rect.x = screen_x + x * tty->font->glyph_width;
                       dst_rect.y = screen_y + y * tty->font->glyph_height;
@@ -433,7 +437,7 @@ void TTY_Blit(TTY* tty, SDL_Surface* screen, int screen_x, int screen_y)
               char chr = tty->framebuffer[modulo(y + tty->scroll_y, tty->height)][modulo(x + tty->scroll_x, tty->width)];
               if (chr)
                 {
-                  TTY_GetGlyph(tty->font, chr, &src_rect);
+                  FNT_GetGlyph(tty->font, chr, &src_rect);
 
                   dst_rect.x = screen_x + x * tty->font->glyph_width;
                   dst_rect.y = screen_y + y * tty->font->glyph_height;
