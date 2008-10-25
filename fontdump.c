@@ -1,33 +1,54 @@
+#include <stdlib.h>
 #include <SDL_image.h>
+
+void write_escaped_string(FILE* out, const char* glyphs)
+{
+  int i;
+  int len = strlen(glyphs);
+  fputc('"', out);
+  for(i = 0; i < len; ++i)
+    {
+      if (glyphs[i] == '"')
+        fprintf(out, "\\\"");
+      else if (glyphs[i] == '\\')
+        fprintf(out, "\\\\");
+      else if (glyphs[i] >= 0x7f)
+        fprintf(out, "\\x%x", (int)glyphs[i]);
+      else
+        fputc(glyphs[i], out);
+    }
+  fputc('"', out);
+}
 
 int main(int argc, char** argv)
 {
-  if (argc != 5)
+  if (argc != 6)
     {
-      puts("Usage: fontdump FONTNAME IMAGEFILE GLYPHWIDTH GLYPHHEIGHT");
+      puts("Usage: fontdump FONTNAME IMAGEFILE GLYPHWIDTH GLYPHHEIGHT GLYPHS");
     }
   else
     {
+      if (SDL_Init(0) != 0)
+        {
+          puts(SDL_GetError());
+          exit(EXIT_FAILURE);
+        }
+
       int i;
-      char* font_name  = argv[1];
-      int glyph_width  = atoi(argv[3]);
-      int glyph_height = atoi(argv[4]);
+      char* font_name    = argv[1];
+      int   glyph_width  = atoi(argv[3]);
+      int   glyph_height = atoi(argv[4]);
+      char* glyphs       = argv[5];
 
       /* Dump code */
       SDL_Surface* temp = IMG_Load(argv[2]);
   
-      printf("Size:   %dx%d\n", temp->w, temp->h);
-      printf("Pitch:  %d\n",    temp->pitch);
-      printf("RMask:  %08x\n",  temp->format->Rmask);
-      printf("GMask:  %08x\n",  temp->format->Gmask);
-      printf("BMask:  %08x\n",  temp->format->Bmask);
-      printf("AMask:  %08x\n",  temp->format->Amask);
-
       {
-        FILE* out = fopen("fount-out.h", "w");
+        FILE* out = stdout;
  
         SDL_LockSurface(temp);
         fprintf(out, "/* automatically generated file */\n\n");
+        fprintf(out, "char   %s_glyphs[] = ", font_name); write_escaped_string(out, glyphs); fprintf(out, ";\n");
         fprintf(out, "int    %s_width  = %d;\n", font_name, temp->w);
         fprintf(out, "int    %s_height = %d;\n", font_name, temp->h);
         fprintf(out, "int    %s_pitch  = %d;\n", font_name, temp->pitch);

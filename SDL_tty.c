@@ -48,7 +48,7 @@ make_message(const char *fmt, va_list ap)
   int n, size = 100;
   char *p, *np;
  
-  if ((p = malloc (size)) == NULL)
+  if ((p = (char*)malloc (size)) == NULL)
     return NULL;
 
   while (1) {
@@ -65,7 +65,7 @@ make_message(const char *fmt, va_list ap)
       size = n+1; /* precisely what is needed */
     else           /* glibc 2.0 */
       size *= 2;  /* twice the old size */
-    if ((np = realloc (p, size)) == NULL) {
+    if ((np = (char*)realloc (p, size)) == NULL) {
       free(p);
       return NULL;
     } else {

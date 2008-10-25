@@ -123,6 +123,13 @@ typedef struct TTY
                                       name##_width, name##_height, name##_bpp, name##_pitch, \
                                       name##_rmask, name##_gmask,  name##_bmask, name##_amask )
 
+#define TTY_CreateFontFromData(name) \
+  TTY_CreateFont(SDL_CreateRGBSurfaceFrom( name##_data,                 \
+                                           name##_width, name##_height, name##_bpp, name##_pitch, \
+                                           name##_rmask, name##_gmask,  name##_bmask, name##_amask ), \
+                 name##_glyph_width, name##_glyph_height,               \
+                 name##_glyphs)
+
 /**
  *  Creates a font from an SDL_Surface. The letter with index 0 is at
  *  the top/left of the image, 
