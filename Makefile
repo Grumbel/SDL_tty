@@ -1,7 +1,7 @@
 all : libSDL_tty.a c64lookalike fontdump
 
 SDL_tty.o : SDL_tty SDL_fnt.o
--o $@ SDL_tty.c SDL_fnt.c -Wall -O2  `sdl-config --cflags`
+	$(CC) -o $@ SDL_tty.c SDL_fnt.c -Wall -O2  `sdl-config --cflags`
 
 libSDL_tty.a : SDL_tty.o SDL_fnt.o
 	$(AR) rcs
