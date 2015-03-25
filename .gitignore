@@ -1,7 +1,4 @@
 *.o
 *~
-/c64lookalike
-/fontdump
-/libSDL_tty.a
+/build*
 /old
-/.sconsign.dblite

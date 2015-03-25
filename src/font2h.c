@@ -17,7 +17,7 @@ int main()
       {
         char* font_name = "font8x12";
         FILE* out = fopen("font.h", "w");
- 
+
         SDL_LockSurface(temp);
         fprintf(out, "/* automatically generated file */\n\n");
         fprintf(out, "int    %s_width  = %d;\n", font_name, temp->w);
@@ -55,8 +55,7 @@ int main()
       /*temp = SDL_CreateRGBSurfaceFrom(font8x12_data,
         font8x12_width, font8x12_height, font8x12_bpp, font8x12_pitch,
         font8x12_rmask, font8x12_gmask,  font8x12_bmask, font8x12_amask);*/
-      
+
 
     }
 }
-
