@@ -42,10 +42,10 @@ int main(int argc, char** argv)
 
       /* Dump code */
       SDL_Surface* temp = IMG_Load(argv[2]);
-  
+
       {
         FILE* out = stdout;
- 
+
         SDL_LockSurface(temp);
         fprintf(out, "/* automatically generated file */\n\n");
         fprintf(out, "char   %s_glyphs[] = ", font_name); write_escaped_string(out, glyphs); fprintf(out, ";\n");
