@@ -1,13 +1,12 @@
 SDL_tty
 =======
 
-SDL_tty is a very simple library that tries to simulate a primitive
+SDL_tty is a simple library that tries to simulate a primitive
 terminal that allows you to print to the screen in much the same way
 that you would print to stdout. The usage is like this:
 
-    // Initialize SDL as usual
-
     // Create the fixed width font
+    SDL_Surface* temp = IMG_Load("fontfile.png");
     TTY_Font* font = TTY_CreateFont(temp, 16, 16,
                                     "\x7f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
@@ -32,6 +31,19 @@ that you would print to stdout. The usage is like this:
 The `c64lookalike` programm demonstrates some more advanced usage of
 the library.
 
+The `fontdump` utility can be used to generate header files that can
+be included straight into the source code so that there are no
+external dependencies:
+
+	Usage: fontdump FONTNAME IMAGEFILE GLYPHWIDTH GLYPHHEIGHT GLYPHS
+
+Example:
+
+    fontdump font8x8 font8x8.png 8 8 \
+      "\x7f !\\"#$$%&\'()*+,-./0123456789:;<=>?@\
+      ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_\`abcdefghijklmnopqrstuvwxyz{|}~" \
+      > font8x8.h
+
 
 Features
 --------
@@ -48,7 +60,7 @@ Features
 Webpage/Contact
 ---------------
 
-The latest version is currently available via:
+The latest version is currently available at:
 
 * https://github.com/Grumbel/SDL_tty
 
