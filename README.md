@@ -28,8 +28,8 @@ that you would print to stdout. The usage is like this:
     TTY_Free(tty);
     TTY_FreeFont(font);
 
-The `c64lookalike` programm demonstrates some more advanced usage of
-the library.
+`fontdump`
+----------
 
 The `fontdump` utility can be used to generate header files that can
 be included straight into the source code so that there are no
@@ -43,6 +43,15 @@ Example:
       "\x7f !\\"#$$%&\'()*+,-./0123456789:;<=>?@\
       ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_\`abcdefghijklmnopqrstuvwxyz{|}~" \
       > font8x8.h
+
+
+`c64lookalike`
+--------------
+
+The `c64lookalike` programm demonstrates some more advanced usage of
+the library.
+
+![Screenshot of c64lookalike](https://raw.githubusercontent.com/Grumbel/SDL_tty/master/c64_screenshot.png)
 
 
 Features
