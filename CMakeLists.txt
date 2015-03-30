@@ -17,29 +17,12 @@
 cmake_minimum_required(VERSION 3.0)
 project(SDL_tty VERSION 0.0.0)
 
-include(FindSDL)
-include(FindSDL_image)
+find_package(SDL REQUIRED)
+find_package(SDL_image REQUIRED)
 
-if(!SDL_FOUND OR !SDL_IMAGE_FOUND)
-  message(FATAL_ERROR "SDL is required")
-endif()
-
-if(!SDL_IMAGE_FOUND)
-  message(FATAL_ERROR "SDL_image is required")
-endif()
-
-file(GLOB SDL_TTY_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-  src/SDL_fnt.c
-  src/SDL_tty.c
-  )
-
-file(GLOB FONTDUMP_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-  src/fontdump.c
-  )
-
-file(GLOB C64LOOKALIKE_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-  src/c64lookalike.c
-  )
+set(SDL_TTY_SOURCES src/SDL_fnt.c src/SDL_tty.c)
+set(FONTDUMP_SOURCES src/fontdump.c)
+set(C64LOOKALIKE_SOURCES src/c64lookalike.c)
 
 include_directories(include/)
 include_directories(src/)
