@@ -24,6 +24,8 @@
 # https://github.com/SuperTux/supertux/blob/master/.travis.yml
 
 language: c
+dist: trusty
+sudo: required
 
 compiler:
   - gcc
@@ -33,19 +35,13 @@ matrix:
   fast_finish: true
 
 env:
-  global:
-    - CMAKE_VERSION=3.2.1
   matrix:
     - BUILD_TYPE="Debug"
     - BUILD_TYPE="Release"
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install build-essential libsdl1.2-dev libsdl-image1.2-dev
-
-  # CMake
-  - wget http://www.cmake.org/files/v3.2/cmake-$CMAKE_VERSION.tar.gz -O - | tar xz
-  - (cd cmake-$CMAKE_VERSION && cmake . && make && sudo make install)
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-4.0" CC="clang-4.0"; fi
 
 script:
   # Clean from previous Travis build
@@ -55,5 +51,18 @@ script:
   - cd "build-$BUILD_TYPE"
   - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - make VERBOSE=1
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise
+    packages:
+    - build-essential
+    - cmake
+    - clang-4.0
+    - gcc-4.9
+    - libsdl1.2-dev
+    - libsdl-image1.2-dev
 
 # EOF #
