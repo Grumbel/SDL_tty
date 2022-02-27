@@ -30,14 +30,14 @@ target_include_directories(SDL_tty
   SYSTEM PUBLIC ${SDL_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIRS}
   PUBLIC include/ src/)
 
-add_executable(fontdump src/fontdump.c)
-target_link_libraries(fontdump SDL_tty)
+add_executable(sdltty-fontdump src/fontdump.c)
+target_link_libraries(sdltty-fontdump SDL_tty)
 
-add_executable(c64lookalike src/c64lookalike.c)
-target_link_libraries(c64lookalike SDL_tty)
+add_executable(sdltty-c64lookalike src/c64lookalike.c)
+target_link_libraries(sdltty-c64lookalike SDL_tty)
 
-install(TARGETS fontdump c64lookalike RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(TARGETS SDL_tty c64lookalike
+install(TARGETS sdltty-fontdump sdltty-c64lookalike RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS SDL_tty
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   PUBLIC_HEADER ${CMAKE_INSTALL_INCLUDES})
 
