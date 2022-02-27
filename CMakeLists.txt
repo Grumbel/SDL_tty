@@ -33,13 +33,36 @@ target_include_directories(SDL_tty
 add_executable(sdltty-fontdump src/fontdump.c)
 target_link_libraries(sdltty-fontdump SDL_tty)
 
+# c64lookalike to run in build/ directory
 add_executable(sdltty-c64lookalike src/c64lookalike.c)
+target_compile_definitions(sdltty-c64lookalike PUBLIC
+  TTY_DATADIR=\"data/\")
 target_link_libraries(sdltty-c64lookalike SDL_tty)
 
-install(TARGETS sdltty-fontdump sdltty-c64lookalike RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+# c64lookalike for install
+add_executable(.sdltty-c64lookalike src/c64lookalike.c)
+target_compile_definitions(.sdltty-c64lookalike PUBLIC
+  TTY_DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}\")
+target_link_libraries(.sdltty-c64lookalike SDL_tty)
+
+file(COPY data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
+
+install(TARGETS .sdltty-c64lookalike
+  RENAME sdltty-c64lookalike
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(TARGETS sdltty-fontdump
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 install(TARGETS SDL_tty
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   PUBLIC_HEADER ${CMAKE_INSTALL_INCLUDES})
 
-# EOF #
+install(TARGETS SDL_tty
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER ${CMAKE_INSTALL_INCLUDES})
 
+install(DIRECTORY data/
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
+
+# EOF #

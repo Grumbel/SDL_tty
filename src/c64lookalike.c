@@ -32,6 +32,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdlib.h>
+
 #include "SDL_tty.h"
 
 int main()
@@ -42,7 +43,9 @@ int main()
   TTY_Font* font;
   SDL_Event event;
 
-  if( SDL_Init(SDL_INIT_VIDEO) <0 )
+  const char* fontfile = TTY_DATADIR "/c64_16x16.png";
+
+  if( SDL_Init(SDL_INIT_VIDEO) < 0 )
   {
     printf("Unable to init SDL: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
@@ -63,11 +66,10 @@ int main()
   }
 
   {
-    // SDL_Surface* temp = TTY_CreateRGBSurface(font8x12);
-    SDL_Surface* temp = IMG_Load("c64_16x16.png");
+    SDL_Surface* temp = IMG_Load(fontfile);
     if (!temp)
     {
-      printf("error: IMG_Load('c64_16x16.png') failed: %s\n", SDL_GetError());
+      printf("error: IMG_Load(\"%s\") failed: %s\n", fontfile, SDL_GetError());
       exit(EXIT_FAILURE);
     }
     else
