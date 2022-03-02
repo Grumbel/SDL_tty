@@ -1,0 +1,17 @@
+get_filename_component(SDL_TTY_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET SDL::SDL)
+  find_package(SDL REQUIRED)
+endif()
+
+if(NOT SDLIMAGE_FOUND)
+  find_package(SDL_image REQUIRED)
+endif()
+
+if(NOT TARGET SDL_tty)
+  include("${SDL_TTY_CMAKE_DIR}/sdl_tty-targets.cmake")
+endif()
+
+# EOF #
