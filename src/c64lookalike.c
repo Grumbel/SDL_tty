@@ -43,7 +43,7 @@ int main()
   TTY_Font* font;
   SDL_Event event;
 
-  const char* fontfile = TTY_DATADIR "/c64_16x16.png";
+  const char* fontfile = SDLTTY_DATADIR "/c64_16x16.png";
 
   if( SDL_Init(SDL_INIT_VIDEO) < 0 )
   {
