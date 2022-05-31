@@ -17,6 +17,11 @@
 cmake_minimum_required(VERSION 3.11)
 project(SDL_tty VERSION 0.0.0)
 
+set(TINYCMMC_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/external/tinycmmc/modules/")
+find_package(tinycmmc CONFIG)
+message(STATUS "tinycmmc module path: ${TINYCMMC_MODULE_PATH}")
+list(APPEND CMAKE_MODULE_PATH ${TINYCMMC_MODULE_PATH})
+
 include(GNUInstallDirs)
 
 find_package(SDL REQUIRED)
@@ -24,14 +29,14 @@ find_package(SDL_image REQUIRED)
 
 add_library(SDL_tty src/SDL_fnt.c src/SDL_tty.c)
 set_target_properties(SDL_tty PROPERTIES
-  PUBLIC_HEADER "include/SDL_fnt.h;include/SDL_tty.h")
+  PUBLIC_HEADER "include/SDL_tty/SDL_fnt.h;include/SDL_tty/SDL_tty.h")
 target_link_libraries(SDL_tty SDL::SDL ${SDL_IMAGE_LIBRARIES})
 target_include_directories(SDL_tty
   SYSTEM PUBLIC ${SDL_IMAGE_INCLUDE_DIRS}
   PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/SDL_tty>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-  $<INSTALL_INTERFACE:include>)
+  $<INSTALL_INTERFACE:include/SDL_tty>)
 
 add_executable(sdltty-fontdump src/fontdump.c)
 target_link_libraries(sdltty-fontdump SDL_tty)
@@ -43,42 +48,23 @@ target_compile_definitions(sdltty-c64lookalike PUBLIC
 target_link_libraries(sdltty-c64lookalike SDL_tty)
 
 # c64lookalike for install
-add_executable(.sdltty-c64lookalike src/c64lookalike.c)
-target_compile_definitions(.sdltty-c64lookalike PUBLIC
+add_executable(sdltty-c64lookalike src/c64lookalike.c)
+target_compile_definitions(sdltty-c64lookalike PUBLIC
   TTY_DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}\")
-target_link_libraries(.sdltty-c64lookalike SDL_tty)
+target_link_libraries(sdltty-c64lookalike SDL_tty)
 
 file(COPY data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
 
-# CMake integration
-configure_file(sdl_tty-config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sdl_tty-config.cmake" @ONLY)
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sdl_tty-config.cmake"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/SDL_tty/")
-export(TARGETS SDL_tty
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/sdl_tty-targets.cmake")
-export(PACKAGE SDL_tty)
-install(EXPORT sdl_tty-targets
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/SDL_tty/")
-
-install(TARGETS .sdltty-c64lookalike
+install(TARGETS sdltty-c64lookalike
   RENAME sdltty-c64lookalike
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(TARGETS sdltty-fontdump
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(TARGETS SDL_tty
-  EXPORT sdl_tty-targets
-  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-  PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
-
-install(TARGETS SDL_tty
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER ${CMAKE_INSTALL_INCLUDES})
-
 install(DIRECTORY data/
   DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME})
+
+include(ExportAndInstallLibrary)
 
 # EOF #
