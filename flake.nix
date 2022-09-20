@@ -14,7 +14,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-       in rec {
+       in {
          packages = flake-utils.lib.flattenTree rec {
            SDL_tty = pkgs.stdenv.mkDerivation {
              name = "SDL_tty";
@@ -25,13 +25,14 @@
                pkgs.pkgconfig
              ];
              buildInputs = [
-               tinycmmc.defaultPackage.${system}
+               tinycmmc.packages.${system}.default
 
                pkgs.SDL
                pkgs.SDL_image
              ];
            };
+           default = SDL_tty;
         };
-        defaultPackage = packages.SDL_tty;
-      });
+       }
+    );
 }
