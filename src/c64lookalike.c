@@ -35,6 +35,22 @@
 
 #include "SDL_tty.h"
 
+struct FontDescription
+{
+  const char* path;
+  int width;
+  int height;
+};
+
+static const char* g_glyphs =
+  "\x7f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+
+static struct FontDescription g_fonts[] = {
+  { SDLTTY_DATADIR "/font8x8.png", 8, 8 },
+  { SDLTTY_DATADIR "/c64_16x16.png", 16, 16 },
+};
+
 int main()
 {
   SDL_Surface* screen;
@@ -43,7 +59,7 @@ int main()
   TTY_Font* font;
   SDL_Event event;
 
-  const char* fontfile = SDLTTY_DATADIR "/c64_16x16.png";
+  struct FontDescription const* fontdesc = &g_fonts[0];
 
   if( SDL_Init(SDL_INIT_VIDEO) < 0 )
   {
@@ -66,20 +82,16 @@ int main()
   }
 
   {
-    SDL_Surface* temp = IMG_Load(fontfile);
-    if (!temp)
+    SDL_Surface* font_surface = IMG_Load(fontdesc->path);
+    if (!font_surface)
     {
-      printf("error: IMG_Load(\"%s\") failed: %s\n", fontfile, SDL_GetError());
+      printf("error: IMG_Load(\"%s\") failed: %s\n", fontdesc->path, SDL_GetError());
       exit(EXIT_FAILURE);
     }
-    else
-    {
-      font = FNT_Create(temp, 16, 16,
-                        "\x7f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                        "[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~");
-      tty = TTY_Create(40, 30, font);
-      SDL_FreeSurface(temp);
-    }
+
+    font = FNT_Create(font_surface, fontdesc->width, fontdesc->height, g_glyphs);
+    tty = TTY_Create(40, 30, font);
+    SDL_FreeSurface(font_surface);
   }
 
   TTY_SetCursorCharacter(tty, '\x7f');
