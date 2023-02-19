@@ -1,22 +1,27 @@
+#include <stdint.h>
 #include <stdlib.h>
+
 #include <SDL_image.h>
 
-void write_escaped_string(FILE* out, const char* glyphs)
+void write_escaped_string(FILE* out, char const* glyphs)
 {
   int i;
   int len = strlen(glyphs);
   fputc('"', out);
+
+  uint8_t const* codepoints = (uint8_t const*)glyphs;
   for(i = 0; i < len; ++i)
-    {
-      if (glyphs[i] == '"')
-        fprintf(out, "\\\"");
-      else if (glyphs[i] == '\\')
-        fprintf(out, "\\\\");
-      else if (glyphs[i] >= 0x7f)
-        fprintf(out, "\\x%x", (int)glyphs[i]);
-      else
-        fputc(glyphs[i], out);
+  {
+    if (codepoints[i] == '"') {
+      fprintf(out, "\\\"");
+    } else if (codepoints[i] == '\\') {
+      fprintf(out, "\\\\");
+    } else if (codepoints[i] >= 0x7f) {
+      fprintf(out, "\\x%x", (int)codepoints[i]);
+    } else {
+      fputc(codepoints[i], out);
     }
+  }
   fputc('"', out);
 }
 
